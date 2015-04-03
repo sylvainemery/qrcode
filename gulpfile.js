@@ -60,13 +60,6 @@ gulp.task('copy', function() {
     .pipe($.size({title: 'copy'}));
 });
 
-// Copy All Filescopy-workerscripts At The Root Level (app)
-gulp.task('copy-workerscripts', function() {
-  return gulp.src('app/scripts/jsqrcode/*.js')
-    .pipe(gulp.dest('dist/scripts/jsqrcode/'))
-    .pipe($.size({title: 'copy-workerscripts'}));
-});
-
 // Copy image files from the Styleguide
 gulp.task('styleguide-images', function() {
   return gulp.src('app/styleguide/**/*.{svg,png,jpg}')
@@ -124,6 +117,14 @@ gulp.task('scripts', function() {
     // Output Files
     .pipe(gulp.dest('dist/scripts'))
     .pipe($.size({title: 'scripts'}));
+});
+
+// Minify and copy all workerscripts
+gulp.task('workerscripts', function() {
+  return gulp.src('app/scripts/jsqrcode/*.js')
+    .pipe($.uglify({preserveComments: 'some'}))
+    .pipe(gulp.dest('dist/scripts/jsqrcode/'))
+    .pipe($.size({title: 'copy-workerscripts'}));
 });
 
 // Scan Your HTML For Assets & Optimize Them
@@ -194,7 +195,7 @@ gulp.task('serve:dist', ['default'], function() {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function(cb) {
-  runSequence('styles', ['html', 'scripts', 'images', 'styleguide-images', 'fonts', 'copy', 'copy-workerscripts'], cb);
+  runSequence('styles', ['html', 'scripts', 'workerscripts', 'images', 'styleguide-images', 'fonts', 'copy'], cb);
 });
 
 // Run PageSpeed Insights
